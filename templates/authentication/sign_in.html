@@ -1,0 +1,57 @@
+{% extends "master.html" %}
+
+{% block title %}SignIn{% endblock title %}
+
+{% block content %}
+
+<div class="d-flex flex-column align-items-center  justify-content-center mt-5">
+
+  {% if check == True %}
+  
+    <div class="w-25 mt-3">
+      {% for msg in messages %}
+      <div class="alert alert-success text-center" role="alert">
+        <h5 class="alert-heading">Your account has been created successfully.</h5>
+        <p>{{msg}}</p>
+      </div>
+      {% endfor%}
+    </div>
+    
+  {% endif %}
+
+    <h1 class="text-primary">Login</h1>
+    <form class = "w-25 mt-3" action="/sign_in" method="post">
+      {% csrf_token %}
+
+        <div class="form-group mt-3">  
+          <label for="username">User Id:</label>  
+          <input type="text" class="form-control" name="username" id="username">  
+        </div>  
+
+        <div class="form-group mt-3">  
+          <label for="pwd">Password:</label>  
+          <input type="password" class="form-control" name="pass" id="pwd">  
+        </div>  
+      
+        <div class="checkbox mt-3 d-flex justify-content-between">  
+          <label><a href="#"> forgot password?</label>
+          <button type="submit" class="btn btn-primary">Login</button>  
+        </div>
+        
+    </form> 
+
+    {% if is_error == True %}
+    
+      <div class="mt-3">
+        {% for msg in messages %}
+        <div class="alert alert-info text-center" role="alert">
+          <h4 class="alert-heading">Oops!</h4>
+          <p>{{msg}}</p>
+        </div>
+        {% endfor%}
+      </div>
+      
+    {% endif %}   
+</div>
+
+{% endblock  %}

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image Upload</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<input type="file" id="image" accept="image/*" style="display:none;">
+<button id="uploadBtn">Upload Image</button>
+<br><br>
+<textarea id="imageURL" rows="4" cols="50"></textarea>
+<!-- <script>
+$(document).ready(function(){
+  $('#uploadBtn').click(function(){
+    $('#image').trigger('click');
+  });
+  
+  $('#image').change(function(){
+    var input = this;
+    var file = input.files[0];
+    var formData = new FormData();
+    formData.append('image', file);
+    $.ajax({
+      url: '/upload_image/', // Replace with your Django view URL
+      type: 'POST',
+      data: formData,
+      processData: false,
+      contentType: false,
+      success: function(response){
+        console.log(response);
+        // Show the image URL in the textarea
+        $('#imageURL').val(response.image_url);
+      },
+      error: function(xhr, status, error){
+        console.error(xhr.responseText);
+        // Handle error response
+      }
+    });
+  });
+});
+</script> -->
+<script>
+$(document).ready(function(){
+    $('#uploadBtn').click(function(){
+        $('#image').trigger('click');
+    });
+      
+    $('#image').change(function(){
+        var input = this;
+        var file = input.files[0];
+        console.log(file); // Check if the file object is correct
+        var formData = new FormData();
+        formData.append('image', file);
+        console.log(formData); // Check if the FormData object contains the file
+        $.ajax({
+            url: '/upload_image/', // Replace with your Django view URL
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response){
+                    console.log(response);
+                    $('#imageURL').val(response.image_url);
+             },
+        });
+    });
+});
+</script>
+</body>
+</html>

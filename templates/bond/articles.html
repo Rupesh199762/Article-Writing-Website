@@ -1,0 +1,496 @@
+{% extends 'master.html' %}
+{% load static %}
+
+{% block title %} Articles {% endblock title %}
+
+{% block content %}
+
+{% block article_list %}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-sm-9">
+            <h3>Write An Article</h3>
+            <div class="p-3">
+                {% for msg in messages %}
+                <div class="alert alert-success text-center">
+                  <p>{{msg}}</p>
+                </div>
+                {% endfor%}
+              </div>
+            <div class="format-btn">
+                <button class=" box_btn" onclick="document.execCommand('bold', false, null)"><i class="fas fa-bold"></i></button>
+                <button class=" box_btn" onclick="document.execCommand('italic', false, null)"><i class="fas fa-italic"></i></button>
+                <button class=" box_btn" onclick="document.execCommand('underline', false, null)"><i class="fas fa-underline"></i></button>
+                <button class="box_btn" onclick="document.execCommand('insertOrderedList', false, null)"><i class="fas fa-list-ol"></i></button>
+                <button class="box_btn" onclick="document.execCommand('insertUnorderedList', false, null)"><i class="fas fa-list-ul"></i></button>
+                <button class="box_btn" onclick="document.execCommand('insertParagraph', false, null)"><i class="fas fa-paragraph"></i></button>
+                <button class="box_btn" onclick="document.execCommand('undo', false, null)"><i class="fas fa-undo"></i></button>
+                <button class="box_btn" onclick="document.execCommand('redo', false, null)"><i class="fas fa-redo"></i></button>
+                <button class="box_btn" onclick="addOneImage();"><i class="fas fa-image"></i></button>
+                <button class="box_btn" id="link_toggle"><i class="fas fa-link"></i></button>
+                <button class="box_btn_text" style="width: 100px;" onclick="add_div()" id="add_div"><i class="fas fa-plus ps-1 pe-1"></i>Add Field</button>
+                <button class="box_btn_text" style="width: 100px;" id="del_div"><i class="fas fa-trash-alt ps-1 pe-1"></i>Del Field</button>
+        
+            </div>
+            <div class="collapse border" id="div_toggle">
+                <div class="d-flex justify-content-evenly p-3">
+                    <div class="input-group pe-1" style="width:300px;">
+                        <span class="input-group-text">Src</span>
+                        <input type="text" id="linkURL" name="src" class="form-control formcontrollink" placeholder="Write URL Here!"/>
+                    </div>
+            
+                    <div class="input-group pe-1" style="width:500px;">
+                        <span class="input-group-text">Text</span>
+                        <input type="text" id="urlText" class="form-control" placeholder="Write Text For URL Here!"/>
+                    </div>
+                     <button class="box_btn" style="width:35px; height:35px" onclick="insertLink()"><i class="fa fa-plus"></i></button>
+                     <button class="box_btn hide" style="width:35px; height:35px"><i class="fa fa-window-close"></i></button>
+                </div>    
+            </div>
+
+            
+        <form action="/saveArticle" method="post">
+            {% csrf_token %}
+            <div class="d-flex mt-2">
+                <div class="input-group ">
+                    <span class="input-group-text">Title</span>
+                    <input type="text" name="title" class="form-control" placeholder="Write title of the Article!"/>
+                </div>
+        
+                <div class="input-group">
+                    <span class="input-group-text">Sub Title</span>
+                    <input type="text" name="sub_title" class="form-control" placeholder="Write Sub Title Here!"/>
+                </div>
+            </div>
+                <div class="mt-2 p-2 border" id="textArea">    
+                    <div contenteditable="true" onfocus="lastFocusedDiv = this" style="padding:10px; overflow: auto; text-Align:justify;  border-radius: 10px; margin-bottom:10px; height:80px"  class="form-control DivtextArea"></div>
+                </div>         
+                    <textarea id="content-textArea" name="content" style="display: none;"></textarea> 
+                    <div class="d-flex justify-content-end mt-1">
+                        <div class="input-group me-2">
+                            <span class="input-group-text">Author</span>
+                            <input type="text" name="authorName" class="form-control" placeholder="Write Author Name Here!"/>
+                        </div>
+                        <button class="btn btn-success" id="submit_button_article" type="submit">Submit</button>
+                </div> 
+        </form>  
+        </div>
+
+        <div class="col-sm-8 mt-5">
+            <ul class="list-group">
+                <h1>Articles</h1>
+                {% for article in articles %}
+                {% if article.isvalid == True %}
+                <li class="list-unstyled border-0 w-100">
+                    <div class="card">
+                        <div class="card-body">
+                             <h5 class="ps-3 card-title"><a href="article_data/{{article.articleid}}" class="text-decoration-none">{{article.title}}</a></h5>       
+                        </div>
+                        <div class="d-flex ps-3 flex-reverse-row justify-content-between" style="font-size: 12px; font-weight: 500; opacity: 0.9">
+                        <span class="ps-3" >By:{{article.author}}</span>
+                        <span class="pe-3">{{article.date_time}}</span>
+                    </div>  
+                </li>
+                {%endif%}
+                {% endfor %}
+            </ul>
+        </div>
+
+    <div class="col-sm-4 comment-box mt-5" style="position:relative; height: 80vh; ">
+        <h6 class="mt-4 text-danger text-uppercase" style="padding-left: 4px; font-weight: bold;">{{ user.first_name }} {{user.last_name}}</h6>
+            <form method="post" action="/add_comment" id="comment_form">
+                {% csrf_token %}
+                <div class="d-flex mt-2">
+                    <div contenteditable="true"  id="commentArea" data-placeholder="Write your comment here..." style="padding-left:4px; border:2px solid #000; margin: 0 2px; overflow: auto; width:100%; height: 45px;"></div>
+                    <textarea id="comment_textArea"  name="comment" style="display: none;"></textarea>
+                    <button class="btn btn-primary ml-2" style="height:45px;"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </form>
+        <div class="col-sm-12">
+            <p class="mt-4">Comments</p>
+            <hr>
+            <div class="list-comment" style="overflow: auto; max-height:330px">
+                <ul class="list-group">
+                    {% for val in items %}
+                    <li style="padding: 0; width: 100%; cursor: pointer;" class="list-group-items">    
+                            <h6 class="ps-2 userID pt-2">{{val.user}}</h6>
+                            <form action="/update_comment" method="post" class="comment_update_form">
+                            {% csrf_token %}
+                            <textarea class="comment_update_textArea "  name="update_comment" style="display: none;"></textarea>
+                            <div class="d-flex justify-content-between"> 
+                            <div class="ps-2 comment_field" contenteditable="false" rows="1" cols="1" style="width: 250px;"> 
+                              {{val.comment}}
+                            </div>  
+                            <button class="btn d-none submit" name="commentId" value="{{val.comment_id}}" type="submit"><i class="fas fa-chevron-circle-right"></i></button>
+                            </div>   
+                        </form>        
+                        {% if val.user.username == request.user.username %}                
+                            <div class="d-flex justify-content-between align-items-center" style="font-size: 12px; font-weight: 500; opacity: 0.9">
+                                <div>
+                                    <button class="btn edit_btn"><i class="fas fa-edit"></i></button>
+                                    <button class="btn d-none close_btn"><i class="fa fa-window-close"></i></button> 
+                                    <button class="btn del_btn" data-comment-id="{{val.comment_id}}"><i class="fas fa-trash-alt"></i></button>
+                                </div>
+                                <label class="dt_lbl">{{val.date_time}}</label>
+                            </div>
+                        {% else %}
+                            <div class="d-flex justify-content-end align-items-center" style="font-size: 12px; font-weight: 500; opacity: 0.9">
+                                <label  class="dt_lbl">{{val.date_time}}</label>
+                            </div>
+                        {% endif %}
+                        
+                        </li>
+                    {% endfor %}
+                </ul>   
+            </div>
+        </div>
+    </div>
+    </div>      
+</div>
+
+{% endblock article_list %}
+
+
+{% endblock content %}
+
+{% block script %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<!-- <script>
+    document.getElementById('textArea').addEventListener('focus',function(){
+        let P = document.createElement('p');
+        this.appendChild(p);
+     });
+</script> -->
+
+<script>
+    function insertLink() {
+     let url = document.getElementById('linkURL').value;
+     if (url != null && url != "") {
+       var linkMarkup = '<a href="' + url + '">' + url + '</a>';
+       document.getElementById('textArea').focus();
+       document.execCommand('insertHTML', false, linkMarkup);
+     }
+   }   
+</script>
+
+<script>
+
+    document.querySelector('.list-comment').querySelectorAll(".list-group li").forEach(function(listItem) {
+        let userid = listItem.querySelector('.userID').innerText;
+        let button_edit = listItem.querySelector('.edit_btn');
+        let close_btn = listItem.querySelector('.close_btn');
+        let submit = listItem.querySelector('.submit');
+        let getfield = listItem.querySelector('.comment_field');
+        let oldtext = getfield.innerText;
+        let button_del = listItem.querySelector('.del_btn');
+        let update_Form = listItem.querySelector('.comment_update_form')
+        let comment_textArea = listItem.querySelector('.comment_update_textArea')
+         
+        if(button_edit){
+            if (userid === '{{request.user.username}}'){
+                button_edit.addEventListener("click", function() {
+                    check = getfield.contentEditable = true;
+                    close_btn.classList.remove('d-none');
+                    getfield.focus();
+                    submit.classList.remove('d-none');
+                    button_edit.classList.add('d-none');
+                });
+            
+                close_btn.addEventListener('click', function() {
+                    if (getfield.innerText !== "") {
+                        getfield.contentEditable = false;
+                        submit.classList.add('d-none');
+                        getfield.blur();
+                        close_btn.classList.add('d-none');
+                    } else {
+                        getfield.textContent = oldtext;
+                        submit.classList.add('d-none');
+                        getfield.blur();
+                        close_btn.classList.add('d-none');
+                    }
+                    button_edit.classList.remove('d-none');
+                });
+            }
+        }
+
+        if(button_del){
+            $(button_del).on('click', function() {
+                let commentId = $(this).data('comment-id');
+                console.log(commentId)
+                
+                $.ajax({
+                    url: '/del_comment/',
+                    type: 'POST', 
+                    data: {'comment_id': commentId},
+                    success: function(response) {
+                        location.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText); 
+                    }
+                });
+            });
+        }
+
+        update_Form.addEventListener('submit',function(){
+               let updated_text = getfield.innerText;
+               comment_textArea.value = updated_text;
+               this.submit();   
+        });
+    });
+
+</script>
+
+<script>
+
+    $(document).ready(function(){
+        $('#upload_btn').click(function(){
+            $('#imgUpload').trigger('click');
+            console.log('clicked');
+        });   
+        $('#imgUpload').change(function(){
+            var input = this;
+            var file = input.files[0];
+            console.log(file);
+            console.log(file.name)
+            var formData = new FormData();
+            formData.append('image', file);
+            console.log(formData); 
+            $.ajax({
+                url: '/upload_image/', 
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response){
+                        console.log(response);
+                        var imgURL = response.image_url; 
+                 },
+                 error: function(xhr, status, error){
+                    console.error(xhr.responseText);
+                }
+            });
+        });
+    });
+
+</script>
+<script>
+
+    document.querySelector('form').addEventListener('submit',function(){
+        let content = document.getElementById('textArea').innerHTML;
+        let content_textArea = document.getElementById('content-textArea').value = content
+        this.submit();    
+    });
+
+</script>
+
+<script>
+
+        document.getElementById('comment_form').addEventListener('submit',function(){
+        let comment = document.getElementById('commentArea').innerText;
+        let comment_textArea = document.getElementById('comment_textArea').value = comment
+        this.submit();
+        });
+
+</script>
+
+<script>
+
+        const editableDiv = document.getElementById('commentArea');
+        const placeholder = editableDiv.getAttribute('data-placeholder');
+
+        if (!editableDiv.textContent.trim().length) {
+        editableDiv.textContent = placeholder;
+        }
+
+        editableDiv.addEventListener('focus', function() {
+        if (editableDiv.textContent === placeholder) {
+            editableDiv.textContent = '';
+        }
+        });
+
+        editableDiv.addEventListener('blur', function() {
+        if (!editableDiv.textContent.trim().length) {
+            editableDiv.textContent = placeholder;
+        }
+        });
+
+</script>
+
+<script>
+
+    document.querySelector('.comment_update_form').addEventListener('submit',function(){  
+        let comment = document.getElementById('comment_field').innerText;;
+        document.getElementById('comment_update_textArea').value = comment;
+        this.submit();
+      });
+
+</script>
+
+<script>
+    $(document).ready(function(){
+        $('#link_toggle').click(function(){
+            $("#div_toggle").show(1000)
+        })
+
+        $('.hide').click(function(){
+            $("#div_toggle").hide(1000)
+        })
+
+        $('#image_toggle').click(function(){
+            $("#image_div_toggle").show(1000)
+        })
+
+        $('#hide_image').click(function(){
+            $("#image_div_toggle").hide(1000)
+        })
+    })
+</script>
+
+<script>
+
+    {
+        document.querySelector(".DivtextArea").focus();
+    }
+    function insertLink() {
+        let urlsrc = document.getElementById('linkURL').value;
+        let urltxt = document.getElementById('urlText').value;    
+        if (urlsrc != null && urlsrc != "" && urltxt != null && urltxt != "") {
+        var linkMarkup = '<a href="' + urlsrc + '">' + urltxt + '</a>';
+        if(lastFocusedDiv){
+            lastFocusedDiv.focus();
+            document.execCommand('insertHTML',false,linkMarkup);
+            }  
+        }
+   }   
+
+
+   function add_div(){
+     let container = document.getElementById('textArea');
+     let div = document.createElement("div");
+     div.contentEditable = true;
+     div.className="form-control DivtextArea";
+     div.style.overflow = "auto";
+     div.style.height = "80px";
+     div.style.margin = "0 0 10px 0";
+     div.style.borderRadius='10px';
+     div.style.padding='10px';
+     div.style.textAlign = 'justify';
+     div.setAttribute("onfocus","lastFocusedDiv = this");
+     container.appendChild(div);
+   }
+
+    document.getElementById('del_div').addEventListener('click',function(){
+            let container = document.getElementById('textArea');
+            let last_element = container.lastChild;
+            let get_last_child = last_element.lastChild;
+            if(last_element.hasChildNodes() && last_element.lastChild.nodeName.toLowerCase() == "img")
+                { 
+                  let img_src = get_last_child.getAttribute('src');
+                  $.ajax({
+                        url: '/delete_image/', 
+                        type: 'POST',
+                        data: {'img_src': img_src},
+                        success: function(response) {
+                            console.log(response);
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(xhr.responseText); 
+                        }
+                    });
+                }
+            container.removeChild(container.lastChild);
+            });
+            
+
+    document.querySelector('#submit_button_article').addEventListener('click',function(){
+        document.querySelector('#textArea').querySelectorAll('.DivtextArea').forEach(function(child){
+            child.contentEditable = false;
+            child.style.overflow = "none";
+            child.style.border = "none";
+            child.style.height = "100%"
+        })
+
+        document.querySelector('#textArea').querySelectorAll('.one_image_container').forEach(function(imgesChild){
+            imgesChild.style.border = "1px solid #ccc";
+        })
+    });
+
+    img_id_counter = 0
+    function uploadImage(input) {
+        imgID = 'img'+ img_id_counter++ ;
+        var file = input.files[0];
+            // console.log(file);
+            // console.log(file.name)
+            var formData = new FormData();
+            formData.append('image', file);
+            // console.log(formData); 
+            $.ajax({
+                url: '/upload_image/', 
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response){
+                        console.log(response);
+                        var imgURL = response.image_url;
+                        var imageContainer = input.parentNode;
+                        var imgElement = document.createElement("img");
+                        imgElement.setAttribute('id', imgID);
+                        imgElement.classList.add('img-fluid');
+                        imgElement.style.objectFit = "cover";
+                        imageContainer.innerHTML = '';
+                        imgElement.src = imgURL;
+                        imageContainer.appendChild(imgElement);
+                 },
+                 error: function(xhr, status, error){
+                    console.error(xhr.responseText);
+                }
+            });
+    }
+
+    var inputIdCounter = 0;
+    var imgcontCounter = 0;
+    function addOneImage(){
+        let imageContainer = document.createElement("div");
+        imageContainer.classList.add("one_image_container");
+        var contimgID = 'imageContainer'+ imgcontCounter++ ;
+        imageContainer.setAttribute('id',contimgID);
+        imageContainer.style.minHeight = '100px';
+        imageContainer.style.border = '2px dashed #ccc';
+        imageContainer.style.padding='10px'
+        imageContainer.style.display = 'flex';
+        imageContainer.style.justifyContent = 'center';
+        imageContainer.style.alignItems = "center";
+       
+        let inputFile = document.createElement("input");
+        var inputId = "image_upload_" + inputIdCounter++;
+        inputFile.setAttribute("type", "file");
+        inputFile.setAttribute("id", inputId);
+        inputFile.style.display = "none";
+
+        let label = document.createElement("label");
+        label.setAttribute("for", inputId);
+        label.style.fontWeight = "bold";
+        label.style.color = "blue";
+        label.style.cursor ="pointer"; 
+        label.textContent = "Click to upload image";
+        console.log(inputId);
+
+        inputFile.addEventListener("change", function() {
+            uploadImage(this);
+        });
+
+        imageContainer.appendChild(inputFile);
+        imageContainer.appendChild(label);
+        let container = document.getElementById('textArea');
+
+        container.appendChild(imageContainer);
+    }
+
+    
+</script>
+
+{% endblock script %}

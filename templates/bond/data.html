@@ -1,0 +1,224 @@
+{% extends 'master.html' %}
+
+{% block title %} Articles {% endblock title %}
+
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-8 mt-5 p-5">
+            <h1 class=""><b>{{Data.title}}</b></h1>
+            <h5 class=""><b>{{Data.subtitle}}</b></h5>
+            <hr>
+            <div class="d-flex justify-content-between ">
+                <span>{{Data.date_time}}</span>
+                <span>By:{{Data.author}}</span>
+            </div>
+            <div class="text-justify h4">{{Data.content|safe}} </div>
+        </div>
+        <div class="col-sm-4 position-relative " style="top:110px; height:80% ; margin-bottom: 100px;">
+            <div class="row">
+                <div class="col-sm-12 col-12">
+                    <h4><b>Quick Links</b></h4>
+                    
+                    <ul class="list-group mt-4">
+                        <li class="list-group-item p-3"><a class="text-decoration-none" href="/" >Home</a></li>
+                        <li class="list-group-item p-3"><a class="text-decoration-none" href="/" >My Account</a></li>
+                        <li class="list-group-item p-3"><a class="text-decoration-none" href="/detailed_view?name=AAM%20AADMI%20PARTY" >Details Of Electoral Bond</a></li>
+                        <li class="list-group-item p-3"><a class="text-decoration-none" href="/view_articles" >Write An Article</a></li>
+                        <li class="list-group-item p-3"><a class="text-decoration-none" href="/contact" >Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="col-sm-12 col-12 mt-5">
+                    <h4><b>List of Political Parties</b></h4>
+                    <ul class="list-group mt-4">
+                        <li class="list-group-item p-3"><a class="text-decoration-none" href="/detailed_view?name=AAM%20AADMI%20PARTY" >Aam Aadmi Party</a></li>
+                        <li class="list-group-item p-3"><a class="text-decoration-none" href="{% url 'detailed_view' %}?name=ALL INDIA TRINAMOOL CONGRESS" >All India Trinamool Congress</a></li>
+                        <li class="list-group-item p-3"><a class="text-decoration-none"  href="{% url 'detailed_view' %}?name=BHARATIYA JANATA PARTY" >Bhartiya Janta Party</a></li>
+                        <li class="list-group-item p-3"><a class="text-decoration-none" href="{% url 'detailed_view'%}?name=PRESIDENT, ALL INDIA CONGRESS COMMITTEE " >Indian National Congress</a></li>
+                        <li class="list-group-item p-3"><a class="text-decoration-none" href="{% url 'detailed_view' %}?name=JANASENA PARTY" >Janasena Party</a></li>
+                        <li class="list-group-item p-3"><a class="text-decoration-none" href="{% url 'detailed_view' %}?name=JANATA DAL ( SECULAR )" >Janta Dal(Secular)</a></li>
+                        <li class="list-group-item p-3"><a class="text-decoration-none" href="{% url 'detailed_view' %}?name=BIHAR PRADESH JANTA DAL(UNITED)" >Janta Dal United</a></li>
+                        <li class="list-group-item p-3"><a class="text-decoration-none" href="{% url 'detailed_view' %}?name=JHARKHAND MUKTI MORCHA" >Jharkhand Mukti Morcha</a></li>
+                        <li class="list-group-item p-3"><a class="text-decoration-none" href="{% url 'detailed_view' %}?name=JAMMU AND KASHMIR NATIONAL CONFERENCE" >J&K National Conference</a></li>
+                        <li class="list-group-item p-3"><a class="text-decoration-none" href="{% url 'detailed_view'%}?name=RASHTRIYA JANTA DAL" >Rashtriya Janta Dal</a></li>
+                        <li class="list-group-item p-3"><a class="text-decoration-none" href="{% url 'detailed_view' %}?name=ADYAKSHA SAMAJVADI PARTY">Samajwadi Party</a></li>
+                        <li class="list-group-item p-3"><a class="text-decoration-none" href="{% url 'detailed_view'%}?name=SHIROMANI AKALI DAL" >Shrimani Akali Dal</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-sm-12 mt-5 pe-3 pb-3 ps-3">
+                    <h6 class="ps-2 userID pt-2"><b>Hi, {{request.user.first_name}}</b></h6>
+                    <form method="post" action="/add_comment" id="comment_form">
+                        {% csrf_token %}
+                        <div class="d-flex flex-column align-items-center mt-2">
+                            <div contenteditable="true"  id="commentArea" data-placeholder="Write your comment here..." style="border-radius: 5px; background-color: darkgrey; padding-left:4px; border-bottom:2px solid #000; margin: 0 2px; overflow: auto; width:100%; min-height: 45px; max-height:100px ;"></div>
+                            <textarea id="comment_textArea"  name="comment" style="display: none; "></textarea>
+                            <button class="btn btn-primary mt-1 w-100" style="height:45px;"><i class="fas fa-paper-plane pe-3 text-light"></i><b>Comment</b></button>
+                        </div>
+                    </form>
+        
+                    <div class="comments list-comment mt-5" style="overflow: auto; max-height: 800px;">
+                        <h4 class="mt-3"><b>Comments</b></h4>
+                        <ul class="list-group">
+                            {% for val in items %}
+                            <li style="width: 100%; cursor: pointer;" class="border rounded mt-2 list-group-items">    
+                                    <h6 class="ps-2 userID pt-2">{{val.user}}</h6>
+                                    <form action="/update_comment" method="post" class="comment_update_form">
+                                    {% csrf_token %}
+                                    <textarea class="comment_update_textArea "  name="update_comment" style="display: none;"></textarea>
+                                    <div class="d-flex justify-content-between"> 
+                                    <div class="ps-2 comment_field" contenteditable="false" rows="1" cols="1" style="width: 250px;"> 
+                                      {{val.comment}}
+                                    </div>  
+                                    <button class="btn d-none submit" name="commentId" value="{{val.comment_id}}" type="submit"><i class="fas fa-chevron-circle-right"></i></button>
+                                    </div>   
+                                </form>        
+                                {% if val.user.username == request.user.username %}                
+                                    <div class="d-flex justify-content-between align-items-center" style="font-size: 12px; font-weight: 500; opacity: 0.9"  >
+                                        <div>
+                                            <button class="btn edit_btn"><i class="fas fa-edit"></i></button>
+                                            <button class="btn d-none close_btn"><i class="fa fa-window-close"></i></button> 
+                                            <button class="btn del_btn" data-comment-id="{{val.comment_id}}"><i class="fas fa-trash-alt"></i></button>
+                                        </div>
+                                        <label class="dt_lbl">{{val.date_time}}</label>
+                                    </div>
+                                {% else %}
+                                    <div class="d-flex justify-content-end align-items-center" style="font-size: 12px; font-weight: 500; opacity: 0.9;">
+                                        <label  class="dt_lbl">{{val.date_time}}</label>
+                                    </div>
+                                {% endif %}
+                                
+                                </li>
+                            {% endfor %}
+                        </ul>  
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </div>
+</div>
+<div class="container-fluid mt-5">
+    <div class="row">
+        {% if request.user.is_authenticated %}
+        <div class="col-sm-8 h-50 pe-5 pb-5 ps-5" >
+            <h4><b>Read More Related Article</b></h4>
+            <ul class="list-group mt-4">
+                {% for val in articles%}
+                    {% if val.user.username == request.user.username %}
+                        <li class="list-group-item p-3"><a class="text-decoration-none" href="{{val.articleid}}" ><h6><b>{{val.title}}</b></h6></a></li>
+                    {% endif %}
+                {% endfor %} 
+            </ul>
+        </div>
+        {% endif %}
+
+        <div class="col-sm-8 h-50 mt-4 pe-5 pb-5 ps-5" >
+            <h4><b>Read More Article</b></h4>
+            <ul class="list-group mt-4">
+                {% for val in articles%} 
+                <li class="list-group-item p-3"><a class="text-decoration-none" href="{{val.articleid}}"><h6><b>{{val.title}}</b></h6></a></li>
+                {% endfor %} 
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+
+
+{% endblock content %}
+{% block script %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+
+    const editableDiv = document.getElementById('commentArea');
+    const placeholder = editableDiv.getAttribute('data-placeholder');
+
+    if (!editableDiv.textContent.trim().length) {
+    editableDiv.textContent = placeholder;
+    }
+
+    editableDiv.addEventListener('focus', function() {
+    if (editableDiv.textContent === placeholder) {
+        editableDiv.textContent = '';
+    }
+    });
+
+    editableDiv.addEventListener('blur', function() {
+    if (!editableDiv.textContent.trim().length) {
+        editableDiv.textContent = placeholder;
+    }
+    });
+
+</script>
+
+<script>
+
+    document.querySelector('.list-comment').querySelectorAll(".list-group li").forEach(function(listItem) {
+        let userid = listItem.querySelector('.userID').innerText;
+        let button_edit = listItem.querySelector('.edit_btn');
+        let close_btn = listItem.querySelector('.close_btn');
+        let submit = listItem.querySelector('.submit');
+        let getfield = listItem.querySelector('.comment_field');
+        let oldtext = getfield.innerText;
+        let button_del = listItem.querySelector('.del_btn');
+        let update_Form = listItem.querySelector('.comment_update_form')
+        let comment_textArea = listItem.querySelector('.comment_update_textArea')
+         
+        if(button_edit){
+            if (userid === '{{request.user.username}}'){
+                button_edit.addEventListener("click", function() {
+                    check = getfield.contentEditable = true;
+                    close_btn.classList.remove('d-none');
+                    getfield.focus();
+                    submit.classList.remove('d-none');
+                    button_edit.classList.add('d-none');
+                });
+            
+                close_btn.addEventListener('click', function() {
+                    if (getfield.innerText !== "") {
+                        getfield.contentEditable = false;
+                        submit.classList.add('d-none');
+                        getfield.blur();
+                        close_btn.classList.add('d-none');
+                    } else {
+                        getfield.textContent = oldtext;
+                        submit.classList.add('d-none');
+                        getfield.blur();
+                        close_btn.classList.add('d-none');
+                    }
+                    button_edit.classList.remove('d-none');
+                });
+            }
+        }
+
+        if(button_del){
+            $(button_del).on('click', function() {
+                let commentId = $(this).data('comment-id');
+                console.log(commentId)
+                
+                $.ajax({
+                    url: '/del_comment/',
+                    type: 'POST', 
+                    data: {'comment_id': commentId},
+                    success: function(response) {
+                        location.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText); 
+                    }
+                });
+            });
+        }
+
+        update_Form.addEventListener('submit',function(){
+               let updated_text = getfield.innerText;
+               comment_textArea.value = updated_text;
+               this.submit();   
+        });
+    });
+
+</script>
+
+{% endblock %}

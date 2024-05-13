@@ -1,0 +1,290 @@
+{% extends "master.html" %}
+{% load static %}
+
+
+{% block title %} Home {% endblock title %}
+{% block content %}
+{% if user.is_authenticated %}
+    {% for msg in messages %}
+            <div class="alert alert-info text-center" role="alert">
+                <p>Well Done!{{msg}}</p>
+            </div>
+        </div>
+    {% endfor%}
+{% endif %}
+<div class="position-absolute disclaimer p-5 d-flex flex-column align-items-center top-50 start-50 translate-middle text-light bg-secondary">
+    <h4><b>Disclaimer:</b></h4>
+    <p class="text-justify h4">The data utilized in this project is solely intended for academic and research purposes. 
+    It is not intended to offend or harm any individual, group, or political sentiment. 
+    The use of this data is purely for study and analysis, and does not reflect any personal or political bias.
+    Any interpretations or conclusions drawn from the data are based on objective analysis and do not intend
+     to promote or denigrate any specific ideology or viewpoint.</p>
+     <button id="btnClose" class="btn btn-danger">Close</button>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12 p-3">
+            <h3>Electoral Bond</h1>
+            <h5>According to Wikipedia</h5>
+            <p class="text-justify">Electoral Bonds were a mode of funding for political parties in India from their introduction in 2017 till
+                they were struck down as unconstitutional by the Supreme Court on 15 February 2024.Following their
+                termination, a five-judge bench headed by the Chief Justice directed the State Bank of India to hand over
+                the identities and other details of donors and recipients to the Election Commission of India, which was 
+                in turn asked to publish them on its website.</p>
+                <br>
+            <p class="text-justify">The scheme was introduced in The Finance Bill, 2017 during the Union Budget 2017-18 by then Finance
+                Minister Arun Jaitley. They were classified as a Money Bill, and thus bypassed certain
+                parliamentary scrutiny processes, in what was alleged to be a violation of Article 110 of Indian 
+                constitution.[4] Mr Jaitley also proposed to amend the Reserve Bank of India (RBI) Act in order to 
+                facilitate the issuance of electoral bonds by banks for the purpose of political funding.
+                <br><br>
+                Although introduced in early 2017, the Department of Economic Affairs in Ministry Of Finance notified 
+                the Electoral Bond Scheme 2018 in a Gazette only on 2 January 2018. According to an estimate, 
+                a total of 18,299 electoral bonds equivalent to a monetary value of ₹9,857 crore, were successfully 
+                transacted during the period spanning from March 2018 to April 2022. On 7 November 2022, the Electoral
+                Bond scheme was amended to increase the sale days from 70 to 85 in a year where any assembly election 
+                may be scheduled.
+                <br><br>
+                On 15 February 2024, a five-judge bench of the Supreme Court of India, headed by Chief Justice DY Chandrachud,
+                unanimously struck down the electoral bonds scheme, as well as amendments to the Representation of People Act, 
+                Companies Act and Income Tax Act, as unconstitutional.They found it "violative of RTI (Right to Information)" 
+                and of voters right to information about political funding under Article 19(1)(a) of the Constitution.
+                They also pointed out that it "would lead to quid pro quo arrangements" between corporations and politicians.
+                The State Bank of India was asked to hand over details of donors and recipients to the Election Commission of 
+                India by March 6, and the ECI was to publish these online by March 13.However, the SBI failed to submit the details
+                by March 6, and approached the Supreme Court asking for more time. The court turned down this request, 
+                following which the details were turned over to the ECI and published on their website.</p>
+        </div>
+
+        <div class="col-sm-12 p-3">
+            <h3>Political Parties of North India Featured in Electoral Bond</h3>
+            <div class="row p-4">
+                <div class="col-12 col-sm-4 p-3">
+                        <h5 class="card-title"><a class="text-decoration-none" href="{% url 'detailed_view' %}?name=AAM AADMI PARTY">Aam Aadmi Party<img class="p-1" src="{% static 'images/AAP.png' %}" alt="aap_img"></a></h5>
+                        <p class="card-text text-justify"><b>Established In:</b> April 1980<br><b>Ideology:</b>Populism, Secularism, Composite nationalism,
+                            Democratic socialism<br>To Know More Visit <a href="https://aamaadmiparty.org/">Official Website</a></p>
+                </div> 
+
+                <div class="col-12 col-sm-4 p-3">
+                        <h5 class="card-title"><a class="text-decoration-none" href="{% url 'detailed_view' %}?name=ADYAKSHA SAMAJVADI PARTY
+                            ">Samajwadi Party <img class="p-1" src="{% static 'images/SWP.png' %}" alt="aap_img"></a></h5>
+                        <p class="card-text text-justify"><b>Established In:</b> 1992<br><b>Ideology:</b>Left Wing Populism, Social democracy
+                            Democratic Socialism<br>To Know More Visit <a href="https://aamaadmiparty.org/">Official Website</a></p>   
+                </div> 
+
+                <div class="col-12 col-sm-4 p-3">
+                    <h5 class="card-title"><a class="text-decoration-none" href="{% url 'detailed_view' %}?name=ALL INDIA TRINAMOOL CONGRESS
+                        ">All India Trinamool Congress<img class="p-1" src="{% static 'images\AITC.png' %}" alt="aap_img"></a></h5>
+                    <p class="card-text text-justify"><b>Established In:</b> 1998<br><b>Ideology:</b>Bengali nationalism,
+                        Progressivism,
+                        Welfarism,
+                        Secularism,
+                        Populism<br>To Know More Visit <a href="https://aamaadmiparty.org/">Official Website</a></p>
+                    
+                </div>
+                
+                <div class="col-12 col-sm-4 p-3">
+                    <h5 class="card-title"><a class="text-decoration-none" href="{% url 'detailed_view' %}?name=BHARATIYA JANATA PARTY
+                        ">Bhartiya Janta Party<img class="p-1" src="{% static 'images/BJP.png' %}" alt="bjp_img"></a></h5>
+                    <p class="card-text text-justify"><b>Established In:</b> April 1980<br><b>Ideology:</b>Hindutva,
+                        Neoliberalism,
+                        Right-wing populism,
+                        Conservatism<br>To Know More Visit <a href="https://aamaadmiparty.org/">Official Website</a></p>   
+                </div>
+
+                <div class="col-12 col-sm-4 p-3">
+                    <h5 class="card-title"><a class="text-decoration-none" href="{% url 'detailed_view' %}?name=BIHAR PRADESH JANTA DAL(UNITED)">Janta Dal United<img class="p-1" src="{% static 'images/JDU.png' %}" alt="bjp_img"></a></h5>
+                    <p class="card-text text-justify"><b>Established In:</b> 2003<br><b>Ideology:</b>Socialism,
+                        Secularism,
+                        Integral humanism<br>To Know More Visit <a href="https://aamaadmiparty.org/">Official Website</a></p>
+                </div>
+
+                <div class="col-12 col-sm-4 p-3">
+                    <h5 class="card-title"><a class="text-decoration-none" href="{% url 'detailed_view' %}?name=JAMMU AND KASHMIR NATIONAL CONFERENCE">J&K National Conference<img class="p-1" src="{% static 'images/JKNC.png' %}" alt="bjp_img"></a></h5>
+                    <p class="card-text text-justify"><b>Established In:</b> 1932<br><b>Ideology:</b>Kashmiriyat,
+                        Kashmiri autonomy,
+                        Secularism<br>To Know More Visit <a href="https://aamaadmiparty.org/">Official Website</a></p>
+                </div>
+
+                <div class="col-12 col-sm-4 p-3">
+                    <h5 class="card-title"><a class="text-decoration-none" href="{% url 'detailed_view' %}?name=JANASENA PARTY">Janasena Party<img class="p-1" src="{% static 'images/GFP.jpg' %}" alt="bjp_img"></a></h5>
+                    <p class="card-text text-justify"><b>Established In:</b>2016<br><b>Ideology:</b>Kashmiriyat,
+                        Kashmiri autonomy,
+                        Secularism<br>To Know More Visit <a href="https://aamaadmiparty.org/">Official Website</a></p>
+                </div>
+
+                <div class="col-12 col-sm-4 p-3">
+                    <h5 class="card-title"><a class="text-decoration-none" href="{% url 'detailed_view' %}?name=JANATA DAL ( SECULAR )
+                        ">Janta Dal(Secular)<img class="p-1" src="{% static 'images/JDS.png' %}" alt="bjp_img"></a></h5>
+                    <p class="card-text text-justify"><b>Established In:</b> 1999<br><b>Ideology:</b>Secularism<br>To Know More Visit 
+                        <a href="https://aamaadmiparty.org/">Official Website</a></p>
+                </div>
+
+                <div class="col-12 col-sm-4 p-3">
+                    <h5 class="card-title"><a class="text-decoration-none" href="{% url 'detailed_view' %}?name=JHARKHAND MUKTI MORCHA
+                        ">Jharkhand Mukti Morcha<img class="p-1" src="{% static 'images/GFP.jpg' %}" alt="bjp_img"></a></h5>
+                    <p class="card-text text-justify"><b>Established In:</b> 1972<br><b>Ideology:</b> ____<br>To Know More Visit
+                        <a href="https://aamaadmiparty.org/">Official Website</a></p>
+                </div>
+
+                <div class="col-12 col-sm-4 p-3">
+                    <h5 class="card-title"><a class="text-decoration-none" href="{% url 'detailed_view'%}?name=PRESIDENT, ALL INDIA CONGRESS COMMITTEE ">Indian National Congress<img src="{% static 'images/INC.png' %}" alt="bjp_img"></a></h5>
+                    <p class="card-text text-justify"><b>Established In:</b>December 1885<br><b>Ideology:</b>Big tent,
+                        Secularism,
+                        Civic, nationalism,
+                        Social democracy<br>To Know More Visit <a href="https://aamaadmiparty.org/">Official Website</a></p>
+                </div>
+
+                <div class="col-12 col-sm-4 p-3">
+                    <h5 class="card-title"><a class="text-decoration-none" href="{% url 'detailed_view'%}?name=RASHTRIYA JANTA DAL
+                        ">Rashtriya Janta Dal<img src="{% static 'images/RJD.png' %}" alt="bjp_img"></a></h5>
+                    <p class="card-text text-justify"><b>Established In:</b>1997<br><b>Ideology:</b>Socialism
+                        <br>To Know More Visit <a href="https://aamaadmiparty.org/">Official Website</a></p>
+                </div>
+
+                <div class="col-12 col-sm-4 p-3">
+                    <h5 class="card-title"><a class="text-decoration-none" href="{% url 'detailed_view'%}?name=SHIROMANI AKALI DAL
+                        ">Shrimani Akali Dal<img src="{% static 'images/SAD.png' %}" alt="bjp_img"></a></h5>
+                    <p class="card-text text-justify"><b>Established In:</b>1920<br><b>Ideology:</b>Punjabiyat,
+                        Conservatism,
+                        Federalism<br>To Know More Visit <a href="https://aamaadmiparty.org/">Official Website</a></p>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-sm-12 p-5">
+            <canvas id="myPieChart"></canvas>
+        </div>
+
+        <div class="col-sm-12 p-5">
+            <canvas id="myBarChart"></canvas>
+        </div>
+ 
+    </div>
+</div>
+
+
+<!-- <div class="col-sm-4 d-block-inline">
+    <a href="/upload_data">Upload To Data Base</a>
+
+</div> -->
+
+
+
+
+{% endblock content %}
+
+{% block script %}
+    <script>
+        document.querySelector('#btnClose').addEventListener('click',function(){
+            let disc = document.querySelector('.disclaimer');
+            disc.classList.add('d-none');
+        })
+    </script>
+
+    <script>
+        const ctx = document.getElementById('myPieChart').getContext('2d');
+            let myPieChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: {{ labels|safe }},
+                    datasets: [{
+                        label: 'Bond Share',
+                        data: {{ values|safe }},
+                        backgroundColor: [
+                            'rgba(255, 128, 0, 0.7)',
+                            'rgba(128, 0, 255, 0.7)',
+                            'rgba(255, 255, 0, 0.7)',
+                            'rgba(0, 153, 51, 0.7)',
+                            'rgba(191, 0, 255, 0.7)',
+                            'rgba(255, 255, 255, 0.7)',
+                            'rgba(255, 0, 0, 0.7)',
+                            'rgba(0, 255, 0, 0.7)',
+                            'rgba(102, 0, 0, 0.7)',
+                            'rgba(255, 153, 153, 0.7)',
+                            'rgba(153, 230, 255, 0.7)',
+                            'rgba(255, 230, 153, 0.7)',
+                        ],
+                        borderColor: [
+                            'rgba(255, 128, 0, 1)',
+                            'rgba(128, 0, 255, 1)',
+                            'rgba(255, 255, 0, 1)',
+                            'rgba(0, 153, 51, 1)',
+                            'rgba(191, 0, 255, 1)',
+                            'rgba(255, 255, 255, 1)',
+                            'rgba(255, 0, 0, 1)',
+                            'rgba(0, 255, 0, 1)',
+                            'rgba(102, 0, 0, 1)',
+                            'rgba(255, 153, 153, 1)',
+                            'rgba(153, 230, 255, 1)',
+                            'rgba(255, 230, 153, 1)',
+                            
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    title: {
+                        display: true,
+                        text: 'myPieChart'
+                    },
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            fontColor: 'black'
+                        }
+                    },
+                    animation: {
+                        duration: 2000,
+                        easing: 'easeInOutQuart'
+                    },
+                    responsive: true
+                }
+            });
+    </script>
+
+    <script>
+        const get_ctx = document.getElementById('myBarChart')
+        var myChart = new Chart(get_ctx, {
+            type: 'bar',
+            data: {
+                labels: {{ short_lable|safe }},
+                datasets: [{
+                    label: 'Data',
+                    data: {{ money|safe}}
+                   
+                }]
+            },
+            options: {
+                // Customize options here
+            }
+        });
+    </script>
+
+    
+
+
+
+
+
+    <!-- <script>
+        // Check if the user is logged in
+        var isLoggedIn = {% if user.is_authenticated %} true {% else %} false {% endif %};
+        
+        // If the user is logged in, prevent them from navigating back to the login page
+        if (isLoggedIn) {
+            window.history.pushState(null, "", window.location.href);
+            window.onpopstate = function() {
+                window.history.pushState(null, "", window.location.href);
+            };
+        }
+    </script> -->
+    
+{% endblock script%}
+
+
+
+
+
+

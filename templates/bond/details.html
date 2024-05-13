@@ -1,0 +1,200 @@
+{% extends 'master.html' %}
+{% load static %}
+
+{% block title %} Electoral Bond Details {% endblock title %}
+
+{% block content %}
+<div class="col-sm-12">
+    {% for msg in messages %}
+    <div class="alert alert-success text-center" role="alert">
+      <h5 class="alert-heading">Error:</h5>
+      <p>{{msg}}</p>
+    </div>
+    {% endfor%}
+  </div>
+
+<div class="container p-4">
+    <div class="row">
+        <div class="col-sm-12 mt-3 mb-5 bg-dark p-5">
+            <form class="d-flex flex-sm-row flex-column justify-content-around" action="/detailed_view" method="post">
+                {% csrf_token %}
+                <div class="form-group"> 
+                    <select class="form-select" name="party_list" id="party_list">
+                        <option selected>Select Party Name</option>
+                        {%for ls in partyList %}
+                        <option value="{{ls}}">{{ls}}</option>
+                        {% endfor%}
+                    </select>
+                </div>
+                <div class="form-group"> 
+                    <select class="form-select" name="company_list" id="company_list">
+                        <option value=""> Select individual/Company Name </option>
+                    </select>
+                </div>
+                <div class="form-group"> 
+                    <select class="form-select" name="bond_list" id="bond_list">
+                        <option value="">Select Bond Id</option>
+                    </select>
+                </div>
+                <button class="btn btn-success" type="submit" >GO</button> 
+            </form>
+
+
+        </div>
+        <div class="col-sm-12 d-flex flex-sm-row flex-column justify-content-between">
+            <h3>{{PartyName}}</h3>
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="{% url 'detailed_view'%}?name={{PartyName}}&page=1">First</a>
+                    </li>   
+                    <li class="page-item">
+                        <a class="page-link" href="{% url 'detailed_view'%}?name={{PartyName}}&page={{ page_obj.previous_page_number }}">Previous</a>
+                    </li>  
+                {% else %}
+                    <li class="page-item disabled">
+                    <span class="page-link">Previous</span>
+                    </li>
+                {% endif %}
+
+                <li class="page-item active">   
+                  <span class="page-link">
+                    {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                  </span>    
+                </li>
+
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="{% url 'detailed_view'%}?name={{PartyName}}&page={{ page_obj.next_page_number }}">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="{% url 'detailed_view'%}?name={{PartyName}}&page={{ page_obj.paginator.num_pages }}">Last</a>
+                    </li>
+                {% endif %} 
+              </ul>
+        </div> 
+        <div class="col-sm-12 table-responsive"> 
+            <table class="table">
+                <!-- <p>Showing items {{ start_index }} to {{ end_index }} of {{ page1.paginator.count }}.</p> -->
+
+                <thead>
+                    <tr>
+                        <th scope="col">Bond_ID</th>
+                        <th scope="col">Purchase_Date</th>
+                        <th scope="col">Name_Of_Purchaser</th>
+                        <th scope="col">Encashment_Date</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Amount</th> 
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for val in page_obj %}
+                    <tr>    
+                        <th scope="row">{{val.bond_id}}</th>
+                        <td>{{val.date_of_purchase}}</td>
+                        <td>{{val.name_of_purchaser}}</td>
+                        <td>{{val.date_of_encashment}}</td>
+                        <td>{{val.status}}</td>
+                        <td>{{val.denomination}}</td>    
+                    </tr>
+                    {% endfor %}              
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th scope="col">Total_amount</th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                        <th scope="col">{{page_obj.paginator.count}}</th>
+                        <th scope="col"></th>
+                        <th scope="col">{{total_amount}}</th>   
+                    </tr>
+                </tfoot>
+            </table>   
+            
+        </div>
+
+        <div class="col-sm-12 p-3">
+            <canvas id="myBarChart"></canvas>
+        </div>
+    </div>
+</div>
+
+ 
+{% endblock content %}
+
+{% block script %}
+<script>
+    const get_ctx = document.getElementById('myBarChart')
+    var myChart = new Chart(get_ctx, {
+        type: 'bar',
+        data: {
+            labels: {{ lables|safe }},
+            datasets: [{
+                label: 'Data',
+                data: {{ values|safe}}
+               
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            elements: {
+            bar: {
+                borderWidth: 2,
+            }          // Customize options here
+        },
+        responsive: true,
+        },
+    });
+</script>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#party_list').change(function() {
+            var selectedValue = $(this).val();
+            $.ajax({
+                url: '/get_company_list/',
+                data: {
+                    'selected_value': selectedValue
+                },
+                dataType: 'json',
+                success: function(data) {
+                    $('#company_list').empty();
+                    $('#company_list').append('<option value=""> Select indivisual/Company Name </option>');
+                    $('#company_list').append('<option value="All">ALL</option>');
+                    $.each(data, function(index, options) {
+                        $('#company_list').append('<option value="' + options + '">' + options + '</option>');
+                    });
+                }
+            });
+        });
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        $('#company_list').change(function() {
+            var selectedValue1 = $(this).val();
+            var selectedValue2 =  $('#party_list').val();
+        
+            $.ajax({
+                url: '/get_bond_list/',
+                data: {
+                    'selected_company_name': selectedValue1,
+                    'selected_party_name': selectedValue2
+                },
+                dataType: 'json',
+                success: function(data) {
+                    $('#bond_list').empty();
+                    $('#bond_list').append('<option value=""> Select Bond Id </option>');
+                    $('#bond_list').append('<option value="All">ALL</option>');
+                    $.each(data, function(index, options) {
+                        $('#bond_list').append('<option value="' + options + '">' + options + '</option>');
+                    });
+                }
+            });
+        });
+    });
+</script>
+{% endblock script %}

@@ -1,0 +1,312 @@
+{% extends 'master.html' %}
+{% load static %}
+
+{% block title %} Try {% endblock title %}
+<link href="{% static 'css/article.css'%}" type="stylesheet"/>
+{% block content %}
+
+<div class="container">
+<div class="col-sm-9">
+    <h3>Write An Article</h3>
+    <div class="p-3">
+        {% for msg in messages %}
+        <div class="alert alert-success text-center">
+          <p>{{msg}}</p>
+        </div>
+        {% endfor%}
+      </div>
+    <div class="format-btn">
+        <button class=" box_btn" onclick="document.execCommand('bold', false, null)"><i class="fas fa-bold"></i></button>
+        <button class=" box_btn" onclick="document.execCommand('italic', false, null)"><i class="fas fa-italic"></i></button>
+        <button class=" box_btn" onclick="document.execCommand('underline', false, null)"><i class="fas fa-underline"></i></button>
+        <button class="box_btn" onclick="document.execCommand('insertOrderedList', false, null)"><i class="fas fa-list-ol"></i></button>
+        <button class="box_btn" onclick="document.execCommand('insertUnorderedList', false, null)"><i class="fas fa-list-ul"></i></button>
+        <button class="box_btn" onclick="document.execCommand('insertParagraph', false, null)"><i class="fas fa-paragraph"></i></button>
+        <button class="box_btn" onclick="document.execCommand('undo', false, null)"><i class="fas fa-undo"></i></button>
+        <button class="box_btn" onclick="document.execCommand('redo', false, null)"><i class="fas fa-redo"></i></button>
+        <input type="file" id="imgUpload" style="display: none;" accept="image/*">
+        <button class="box_btn" for="imgUpload" id="upload_btn"><i class="fas fa-image"></i></button>
+        <button class="box_btn" id="link_toggle"><i class="fas fa-link"></i></button>
+        <button class="box_btn_text" style="width:100px;" onclick="add_div()" id="add_div"><i class="fas fa-plus ps-1 pe-1"></i>Add Field</button>
+        <button class="box_btn_text" style="width:100px;" id="del_div"><i class="fas fa-trash-alt ps-1 pe-1"></i>Del Field</button>
+        <button class="box_btn_text" style="width:120px;" id="image_toggle"><i class="fas fa-plus ps-1 pe-1"></i>Add Image</button>
+    </div>
+    <div class="collapse border" id="div_toggle">
+        <div class="d-flex justify-content-evenly p-3">
+            <div class="input-group pe-1" style="width:300px;">
+                <span class="input-group-text">src</span>
+                <input type="text" id="linkURL" name="src" class="form-control formcontrollink" placeholder="Write title Here!"/>
+            </div>
+    
+            <div class="input-group pe-1" style="width:500px;">
+                <span class="input-group-text">text</span>
+                <input type="text" id="urlText" class="form-control" placeholder="Write Author Name Here!"/>
+            </div>
+             <button class="box_btn" style="width:35px; height:35px" onclick="insertLink()"><i class="fa fa-plus"></i></button>
+             <button class="box_btn hide" style="width:35px; height:35px"><i class="fa fa-window-close"></i></button>
+        </div>    
+    </div>
+
+    <div class="collapse border" id="image_div_toggle">
+        <div class="d-flex justify-content-evenly p-3">
+            <div class="d-flex flex-column align-items-center border p-3" onclick="addOneImage();">
+                <button class="box_btn" for="imgUpload" id="upload_btn"><i class="fas fa-image"></i> </button>
+                <label>One Image</label>
+            </div>
+            <div class="d-flex flex-column align-items-center border p-3">
+                <button class="box_btn" for="imgUpload" id="upload_btn"><i class="fas fa-images"></i></button>
+                <label>Two Images</label>
+            </div>
+            <div class="d-flex flex-column align-items-center border p-3">
+                <button class="box_btn" for="imgUpload" id="upload_btn"><i class="fas fa-images"></i></button>
+                <label>Four Images</label>
+            </div>
+             <button class="box_btn" id="hide_image" style="width:35px; height:35px"><i class="fa fa-window-close"></i></button>
+        </div>    
+    </div>
+    
+<form action="/saveArticle" method="post">
+    {% csrf_token %}
+    <div class="d-flex mt-2">
+        <div class="input-group ">
+            <span class="input-group-text">Title</span>
+            <input type="text" name="title" class="form-control" placeholder="Write title Here!"/>
+        </div>
+
+        <div class="input-group">
+            <span class="input-group-text">Author</span>
+            <input type="text" name="authorName" class="form-control" placeholder="Write Author Name Here!"/>
+        </div>
+    </div>
+        <div class="mt-2 p-2 border" id="textArea">    
+            <div contenteditable="true" onfocus="lastFocusedDiv = this" style="padding:10px; overflow: auto; text-Align:justify;  border-radius: 10px; margin-bottom:10px; height:80px"  class="form-control border DivtextArea"></div>
+        </div>         
+            <textarea id="content-textArea" name="content" style="display: none;"></textarea> 
+            <div class="d-flex justify-content-end mt-1">
+            <button class="btn btn-success" type="submit">Submit</button>
+        </div>
+     
+    
+</form>  
+</div>
+</div>
+
+
+
+
+{% endblock content %}
+
+{% block script %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function(){
+        $('#link_toggle').click(function(){
+            $("#div_toggle").show(1000)
+        })
+
+        $('.hide').click(function(){
+            $("#div_toggle").hide(1000)
+        })
+
+        $('#image_toggle').click(function(){
+            $("#image_div_toggle").show(1000)
+        })
+
+        $('#hide_image').click(function(){
+            $("#image_div_toggle").hide(1000)
+        })
+    })
+</script>
+
+<script>
+    {
+    let container = document.querySelector('#textArea');
+    let children = container.querySelectorAll('*');
+    children.forEach(function(child){
+        child.focus();
+    })
+    }
+</script>
+
+
+
+<script>    
+    function insertLink() {
+        let urlsrc = document.getElementById('linkURL').value;
+        let urltxt = document.getElementById('urlText').value;    
+        if (urlsrc != null && urlsrc != "" && urltxt != null && urltxt != "") {
+            var linkMarkup = '<a href="' + urlsrc + '">' + urltxt + '</a>';
+            if(lastFocusedDiv){
+                lastFocusedDiv.focus();
+                document.execCommand('insertHTML',false,linkMarkup);
+                }  
+            }
+        $("#div_toggle").hide(1000);
+    }   
+
+
+   function add_div(){
+     let container = document.getElementById('textArea');
+     let div = document.createElement("p");
+     div.contentEditable = true;
+     div.className="form-control DivtextArea";
+     div.style.overflow = "auto";
+     div.style.height = "80px";
+     div.style.margin = "0 0 10px 0";
+     div.style.borderRadius='10px';
+     div.style.padding='10px';
+     div.style.textAlign = 'justify';
+     div.setAttribute("onfocus","lastFocusedDiv = this");
+     container.appendChild(div);
+   }
+
+    document.getElementById('del_div').addEventListener('click',function(){
+            let container = document.getElementById('textArea');
+            container.removeChild(container.lastChild);
+    });
+    
+
+    var inputIdCounter = 0; // Counter for unique input IDs
+    
+    function uploadImage(input) {
+        var file = input.files[0];
+        var reader = new FileReader();
+        
+        reader.onload = function(e) {
+            var imageContainer = input.parentNode;
+            var imgElement = document.createElement("img");
+            imgElement.classList.add('img-fluid');
+
+            imageContainer.innerHTML = '';
+            imgElement.src = e.target.result;
+            imageContainer.appendChild(imgElement);
+        };
+        
+        reader.readAsDataURL(file);
+    }
+
+    function addOneImage(){
+        // Create div element with class "one_image_container"
+        var imageContainer = document.createElement("div");
+        imageContainer.classList.add("one_image_container");
+        imageContainer.style.width = '100%';
+        imageContainer.setAttribute('id','imageContID')
+        imageContainer.style.maxHeight = '500px';
+        imageContainer.style.border = '2px dashed #ccc';
+        imageContainer.style.display = 'flex';
+        imageContainer.style.justifyContent = 'center';
+        imageContainer.style.alignItems = "center";
+        imageContainer.style.cursor = "pointer";
+       
+
+
+        // Create input element for file upload
+        var inputFile = document.createElement("input");
+        var inputId = "image_upload_" + inputIdCounter++; // Unique input ID
+        inputFile.setAttribute("type", "file");
+        inputFile.setAttribute("id", inputId);
+        inputFile.style.display = "none";
+
+        // Create label element
+        var label = document.createElement("label");
+        label.setAttribute("for", inputId);
+        label.textContent = "Click to upload image";
+
+
+        // Add change event listener to input
+        inputFile.addEventListener("change", function() {
+            uploadImage(this);
+        });
+
+        // Append input and label to the div
+        imageContainer.appendChild(inputFile);
+        imageContainer.appendChild(label);
+
+        // Get reference to the container div
+        let container = document.getElementById('textArea');
+
+        // Append the newly created div to the container
+        container.appendChild(imageContainer);
+        
+        console.log(inputIdCounter)
+    }
+
+
+  </script>
+
+<!-- <script>
+    function addOneImage(){
+        var inputIdCounter = 0;
+        var imageContainer = document.createElement("div");
+        imageContainer.classList.add("one_image_container");
+        var imageContID = 'oneimage'+ inputIdCounter++; 
+        imageContainer.style.widht = '100%';
+        imageContainer.setAttribute('id','imageContID')
+        imageContainer.style.maxHeight = '200px';
+        imageContainer.style.border = '2px dashed #ccc';
+        imageContainer.style.display = 'flex';
+        imageContainer.style.justifyContent = 'center';
+        imageContainer.style.alignItems = "center";
+        imageContainer.style.cursor = "pointer";
+        imageContainer.setAttribute('onclick',"document.getElementById('inputId').click()")
+
+        // Create input element for file upload
+        var inputFile = document.createElement("input");
+        var inputId = "image_upload_" + inputIdCounter++;
+        inputFile.setAttribute("type", "file");
+        inputFile.setAttribute("id", "inputId");
+        inputFile.style.display = "none";
+        inputFile.setAttribute("accept","image/*");
+        inputFile.setAttribute("onchange","displayImage(event)");
+
+        // Create label element
+        var label = document.createElement("label");
+        label.setAttribute("for", "inputId");
+        label.textContent = "Click to upload image";
+
+        imageContainer.appendChild(inputFile);
+        imageContainer.appendChild(label);
+
+        let container = document.getElementById('textArea');
+        console.log(imageContainer)
+        container.appendChild(imageContainer);
+    }
+
+
+    function displayImage(event) {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function() {
+            const img = document.createElement('img');
+            img.src = reader.result;
+            document.getElementsById('imageContID').innerHTML = '';
+            document.getElementById('imageContID').appendChild(img);
+        }
+
+        reader.readAsDataURL(file);
+    }
+</script> -->
+
+
+    <!-- // function uploadImage(input) {
+    //     var file = input.files[0];
+    //     var reader = new FileReader();
+        
+    //     reader.onload = function(e) {
+    //         var imageContainer = input.parentNode;
+    //         var imgElement = document.createElement("img");
+    //         imgElement.classList.add('img-fluid');
+    //         imgElement.style.objectFit = "cover";
+    //         imageContainer.innerHTML = '';
+    //         imgElement.src = e.target.result;
+    //         imageContainer.appendChild(imgElement);
+    //     };
+        
+    //     reader.readAsDataURL(file);
+    // } -->
+
+
+
+{% endblock script %}
