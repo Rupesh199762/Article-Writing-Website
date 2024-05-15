@@ -4,4 +4,4 @@ from authentication.models import ACModel
 class ArticleSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ACModel
-        fields = ('articleid','title','author','isvalid',)
+        fields = ('url','articleid','title','author','isvalid',)
